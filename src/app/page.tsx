@@ -1,7 +1,7 @@
-import { db } from "@/server/db";
-import { users } from "@/server/db/schema";
+import { db } from "@/lib/db";
+import { users } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
-import { auth, signIn, signOut } from "@/server/auth";
+import { auth, signIn, signOut } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 
 export default async function Home() {
