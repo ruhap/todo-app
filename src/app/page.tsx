@@ -1,21 +1,50 @@
 import { db } from "@/lib/db";
-import { users } from "@/lib/db/schema";
+import { todos } from "@/lib/db/schema";
 import { auth } from "@/lib/auth";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import { Input } from "@/components/ui/input";
+import { revalidatePath } from "next/cache";
+
+const createSchema = z.object({
+  title: z.string().trim().min(1),
+});
 
 export default async function Home() {
   const session = await auth();
 
-  const data = await db
-    .select({
-      name: users.name,
-    })
-    .from(users);
+  const id = session?.user?.id;
+
+  if (!id) {
+    redirect("/api/auth/signin");
+  }
+
+  const data = await db.query.todos.findMany({
+    where: (todos, { eq }) => eq(todos.createdById, id),
+  });
+
   return (
     <main className="flex min-h-screen flex-col p-24">
-      <h1>Data from database (users)</h1>
       {JSON.stringify(data)}
-      <h1>Data from session (user)</h1>
-      {JSON.stringify(session)}
+      <form
+        action={async (formData: FormData) => {
+          "use server";
+
+          const parsed = createSchema.parse({
+            title: formData.get("title"),
+          });
+
+          await db.insert(todos).values({
+            title: parsed.title,
+            createdById: id,
+          });
+          revalidatePath("/");
+        }}
+      >
+        <Input type="text" name="title" />
+
+        <button type="submit">Submit</button>
+      </form>
     </main>
   );
 }
