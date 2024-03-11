@@ -1,8 +1,6 @@
 import { db } from "@/lib/db";
 import { users } from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
-import { auth, signIn, signOut } from "@/lib/auth";
-import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
 export default async function Home() {
   const session = await auth();
