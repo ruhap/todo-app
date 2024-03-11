@@ -10,27 +10,10 @@ export default async function Home() {
   const data = await db.select().from(users);
   return (
     <main className="flex min-h-screen flex-col p-24">
-      <h1>Hello World</h1>
-      {JSON.stringify(data, null, 2)}
-      {JSON.stringify(session, null, 2)}
-
-      <form
-        action={async () => {
-          "use server";
-          await signIn();
-        }}
-      >
-        <Button>Sign In</Button>
-      </form>
-
-      <form
-        action={async () => {
-          "use server";
-          await signOut();
-        }}
-      >
-        <Button>Sign Out</Button>
-      </form>
+      <h1>Data from database (users)</h1>
+      {JSON.stringify(data)}
+      <h1>Data from session (user)</h1>
+      {JSON.stringify(session)}
     </main>
   );
 }
