@@ -1,12 +1,18 @@
+import { signIn, signOut } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
-import { Provider, signIn, signOut } from "@/lib/auth.config";
+import { Provider } from "@/lib/auth.config";
 
 export const SignIn = ({
   provider,
   ...props
 }: { provider?: Provider } & React.ComponentPropsWithRef<typeof Button>) => {
   return (
-    <form action={async () => await signIn(provider)}>
+    <form
+      action={async () => {
+        "use server";
+        await signIn(provider);
+      }}
+    >
       <Button {...props}>Sign In</Button>
     </form>
   );
@@ -14,7 +20,12 @@ export const SignIn = ({
 
 export const SignOut = (props: React.ComponentPropsWithRef<typeof Button>) => {
   return (
-    <form action={async () => await signOut()}>
+    <form
+      action={async () => {
+        "use server";
+        await signOut();
+      }}
+    >
       <Button variant="ghost" {...props}>
         Sign Out
       </Button>
