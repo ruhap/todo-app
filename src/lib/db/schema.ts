@@ -8,6 +8,8 @@ import {
   timestamp,
   serial,
 } from "drizzle-orm/pg-core";
+
+import { relations } from "drizzle-orm";
 import { type AdapterAccount } from "next-auth/adapters";
 
 export const createTable = pgTableCreator((name) => `todo-app_${name}`);
@@ -16,7 +18,7 @@ export const todos = createTable(
   "todo",
   {
     id: serial("id").primaryKey(),
-    title: text("title").notNull(),
+    name: text("title").notNull(),
     completed: boolean("completed").default(false).notNull(),
     createdById: text("createdById")
       .notNull()
@@ -26,7 +28,7 @@ export const todos = createTable(
   },
   (todo) => ({
     createdByIdIdx: index("createdById_idx").on(todo.createdById),
-    titleIndex: index("title_idx").on(todo.title),
+    titleIndex: index("title_idx").on(todo.name),
   })
 );
 
@@ -37,6 +39,10 @@ export const users = createTable("user", {
   emailVerified: timestamp("emailVerified", { mode: "date" }),
   image: text("image"),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+  accounts: many(accounts),
+}));
 
 export const accounts = createTable(
   "account",
@@ -62,13 +68,27 @@ export const accounts = createTable(
   })
 );
 
-export const sessions = createTable("session", {
-  sessionToken: text("sessionToken").notNull().primaryKey(),
-  userId: text("userId")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  expires: timestamp("expires", { mode: "date" }).notNull(),
-});
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  user: one(users, { fields: [accounts.userId], references: [users.id] }),
+}));
+
+export const sessions = createTable(
+  "session",
+  {
+    sessionToken: text("sessionToken").notNull().primaryKey(),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    expires: timestamp("expires", { mode: "date" }).notNull(),
+  },
+  (session) => ({
+    userIdIdx: index("session_userId_idx").on(session.userId),
+  })
+);
+
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}));
 
 export const verificationTokens = createTable(
   "verificationToken",
