@@ -1,6 +1,6 @@
-import { signIn, signOut } from "@/actions/auth.actions";
 import { Button } from "@/components/ui/button";
 import { Provider } from "@/lib/auth.config";
+import { signIn, signOut } from "next-auth/react";
 
 export const SignIn = ({
   provider,
