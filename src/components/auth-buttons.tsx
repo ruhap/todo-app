@@ -26,9 +26,7 @@ export const SignOut = (props: React.ComponentPropsWithRef<typeof Button>) => {
         await signOut();
       }}
     >
-      <Button variant="ghost" {...props}>
-        Sign Out
-      </Button>
+      <Button {...props}>Sign Out</Button>
     </form>
   );
 };
