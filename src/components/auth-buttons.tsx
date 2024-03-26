@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Provider } from "@/lib/auth.config";
 import { signIn, signOut } from "next-auth/react";
 
-export const SignIn = ({
+export const SignInButton = ({
   provider,
   ...props
 }: { provider?: Provider } & React.ComponentPropsWithRef<typeof Button>) => {
@@ -18,7 +18,9 @@ export const SignIn = ({
   );
 };
 
-export const SignOut = (props: React.ComponentPropsWithRef<typeof Button>) => {
+export const SignOutButton = (
+  props: React.ComponentPropsWithRef<typeof Button>
+) => {
   return (
     <form
       action={async () => {
