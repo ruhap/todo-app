@@ -3,13 +3,20 @@ import Discord from "next-auth/providers/discord";
 
 import type { NextAuthConfig } from "next-auth";
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
-import { db } from "./db";
-import { createTable } from "./db/schema";
-import { env } from "./env";
+import { db } from "@/lib/db";
+import { createTable } from "@/lib/db/schema";
+import { env } from "@/lib/env.config";
+
+export type Provider = "discord";
 
 export const config = {
-  theme: {
-    logo: "https://next-auth.js.org/img/logo/logo-sm.png",
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    error: "/",
+    signIn: "/",
+    signOut: "/",
   },
   providers: [
     Discord({
@@ -18,13 +25,9 @@ export const config = {
     }),
   ],
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    authorized({ auth }) {
+      return Boolean(auth?.user);
+    },
   },
   adapter: DrizzleAdapter(db, createTable),
 } satisfies NextAuthConfig;

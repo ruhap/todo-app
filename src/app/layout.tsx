@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "../styles/globals.css";
+import "@/styles/globals.css";
+import { SessionProvider } from "next-auth/react";
+import { auth } from "@/lib/auth.config";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,14 +12,15 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+const RootLayout = async ({ children }: React.PropsWithChildren) => {
+  const session = await auth();
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className} suppressHydrationWarning>
+        <SessionProvider session={session}>{children}</SessionProvider>
+      </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "db:push": "drizzle-kit push:pg",
-    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push:pg --config=src/lib/drizzle.config.ts",
+    "db:studio": "drizzle-kit studio --config=src/lib/drizzle.config.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
