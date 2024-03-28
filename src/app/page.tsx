@@ -1,11 +1,8 @@
-import { SignIn } from "@/components/auth-buttons";
-
 const Home = () => {
   return (
-    <main>
+    <div className="container py-4">
       <h1>Home</h1>
-      <SignIn provider="discord" />
-    </main>
+    </div>
   );
 };
 

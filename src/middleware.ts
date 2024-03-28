@@ -1,18 +1,18 @@
-import { auth as middleware } from "@/lib/auth.config";
-import { DEFAULT_REDIRECT, PUBLIC_ROUTES, ROOT } from "@/routes";
+import { auth } from "@/lib/auth.config";
 
-export default middleware((req) => {
-  const { nextUrl } = req;
+export const ROOT = "/";
+export const PUBLIC_ROUTES = ["/"];
+export const DEFAULT_REDIRECT = "/dashboard";
 
-  const isAuthenticated = Boolean(req.auth);
+export default auth(({ nextUrl, auth }) => {
+  const isAuthenticated = Boolean(auth);
   const isPublicRoute = PUBLIC_ROUTES.includes(nextUrl.pathname);
 
-  if (isPublicRoute && isAuthenticated) {
+  if (isPublicRoute && isAuthenticated)
     return Response.redirect(new URL(DEFAULT_REDIRECT, nextUrl));
-  }
-  if (!isAuthenticated && !isPublicRoute) {
+
+  if (!isAuthenticated && !isPublicRoute)
     return Response.redirect(new URL(ROOT, nextUrl));
-  }
 });
 
 export const config = {

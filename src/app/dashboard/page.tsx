@@ -1,11 +1,8 @@
-import { SignOut } from "@/components/auth-buttons";
-
 const Dashboard = () => {
   return (
-    <main>
+    <div className="container py-4">
       <h1>Dashboard</h1>
-      <SignOut />
-    </main>
+    </div>
   );
 };
 

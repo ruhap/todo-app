@@ -3,6 +3,10 @@ import { Inter } from "next/font/google";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth.config";
+import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,12 +18,57 @@ export const metadata: Metadata = {
 
 const RootLayout = async ({ children }: React.PropsWithChildren) => {
   const session = await auth();
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className} suppressHydrationWarning>
-        <SessionProvider session={session}>{children}</SessionProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionProvider session={session}>
+            <div className="flex flex-col h-screen">
+              <Header />
+              <main className="flex flex-col flex-grow">{children}</main>
+              <Footer />
+            </div>
+          </SessionProvider>
+        </ThemeProvider>
       </body>
     </html>
+  );
+};
+
+const Footer = () => {
+  return (
+    <footer className="py-4">
+      <div className="container flex items-center space-x-4 justify-between">
+        <h2>Footer</h2>
+      </div>
+    </footer>
+  );
+};
+
+const Header = async () => {
+  const session = await auth();
+  return (
+    <header className="py-4">
+      <div className="container flex items-center space-x-4 justify-between">
+        <h2>Logo</h2>
+        <ThemeToggle />
+        {session ? (
+          <Button asChild>
+            <Link href="/api/auth/signout">Sign out</Link>
+          </Button>
+        ) : (
+          <Button asChild>
+            <Link href="/api/auth/signin">Sign in</Link>
+          </Button>
+        )}
+      </div>
+    </header>
   );
 };
 

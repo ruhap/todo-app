@@ -13,11 +13,6 @@ export const config = {
   session: {
     strategy: "jwt",
   },
-  pages: {
-    error: "/",
-    signIn: "/",
-    signOut: "/",
-  },
   providers: [
     Discord({
       clientId: env.AUTH_DISCORD_CLIENT_ID,
@@ -26,7 +21,8 @@ export const config = {
   ],
   callbacks: {
     authorized({ auth }) {
-      return Boolean(auth?.user);
+      const isAuthenticated = Boolean(auth?.user);
+      return isAuthenticated;
     },
   },
   adapter: DrizzleAdapter(db, createTable),
